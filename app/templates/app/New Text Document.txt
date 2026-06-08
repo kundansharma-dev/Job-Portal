@@ -1,0 +1,85 @@
+1st Day
+------
+Project definition kya h
+ :Job Portal h
+	jiske ander
+		Candidate login  Rigis 
+		Commpnay login  Rigis 
+
+Functionalty koun kouns si h
+Koun koun Modules honge(Project Moduls)
+
+	1:Admin(Django Admin Panle)
+	2:Company:-Acording to job opning ke 	leye post karegi
+	3:Candidate:- Compnany ke upar 	requairment ke leye apply karega
+Q:Project Moduls ka mtlab Jo inke andar kaam karne wala
+
+--------------------------------------------------
+Particulaar Functionality koun koun si kaam kar sakti h 
+* Admin modul kya kar sakta h:  
+	1:Admin Login
+	2:User Manage
+	3:Job Opening Verify
+	4:Company Manage
+* Company Modul kya kar sakta h:  
+	1:Company Rigistration
+	2:Company Login
+	3:Company Profle update
+	4:Company Job Opening Add
+	5:Job Openig CRUD
+	6:Applied candidate list
+* Candidate Modul kya kar sakta h: 
+	1:Candidate Rigistration
+	2:Candidate Login
+	3:Candidate Profle update
+	4:Job Opening Lsit
+	5:Candidate Job Apply
+	6:Company List
+
+2nd day
+------
+Project DataBase Schema
+
+	Tables
+
+* User Master Tables:
+	1:Email
+	2:Password
+	3:Role(Candidate & Compnay)
+	4:OTP
+	5:Flag(
+		1:Is_Active
+		2:Is_Ctreated
+		3:Is_Updated
+		4:Is_Verify
+		)
+* Candidate tables:
+	1:11stName
+	2:Lastname
+	3:Contact
+	4:State
+	5:City
+	6:Address
+	7:Gender
+	8:DOB
+* Company tables:
+	1:Owner Name
+	2:Company Name
+	3:Contact
+	4:Address
+	5:State
+	6:City
+	7:Logo
+	
+3rd Day
+---------
+Project Implementation
+
+
+4th day
+Registration of Candidates
+Registration of Compnay
+
+
+
+

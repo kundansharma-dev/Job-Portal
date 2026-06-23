@@ -25,8 +25,12 @@ SECRET_KEY = 'django-insecure-k88a)lz+xgmyz!=qqra2xbx+6o*#3t0zk@gdj7(6jq#u2)jj3p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = [
+    "web-production-3f6fe.up.railway.app",
+    ".railway.app",
+    ".up.railway.app",
+    "*"
+]
 
 # Application definition
 
@@ -129,3 +133,17 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://web-production-3f6fe.up.railway.app",
+    "https://*.up.railway.app",
+    "https://*.railway.app"
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True

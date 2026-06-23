@@ -6,6 +6,8 @@ from random import randint   #  otp ke liye module import kiya
 
 def indexpage(request):
     return render(request,'app/index.html')
+def CompanyIndexPage(request):
+    return render(request,'app/company-index.html')
 
 
 def SignupPage(request):
@@ -15,29 +17,58 @@ def register(request):
     return render(request,'app/signup.html')
 
 def RegisterUser(request):
-    if request.POST['role']=='Candidate':
-        
-        role=request.POST['role']
-        fname=request.POST['firstname']
-        lname=request.POST['lastname']
-        email=request.POST['email']
-        password=request.POST['password']
-        cpassword=request.POST['cpassword']
 
-        user= UserMaster.objects.filter(email=email)
+    role = request.POST.get('role')
+    fname = request.POST.get('firstname')
+    lname = request.POST.get('lastname')
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    cpassword = request.POST.get('cpassword')
 
-        if user:
-            message="User already Exist"
-            return render(request,'app/signup.html',{'msg':message})
-        else:
-            if password==cpassword:
-                otp=randint(10000,999999)
-                newuser=UserMaster.objects.create(role=role,otp=otp,email=email,password=password)
-                newcand=Candidate.objects.create(user_id=newuser,firstname=fname,lastname=lname)
-                return render(request,'app/otpverify.html',{'email':email})
+    user = UserMaster.objects.filter(email=email).first()
+
+    if user:
+        return render(request,'app/signup.html',{
+            'msg':'User already exists'
+        })
+
+    if password != cpassword:
+        return render(request,'app/signup.html',{
+            'msg':'Password and Confirm Password do not match'
+        })
+
+    otp = randint(100000,999999)
+
+    newuser = UserMaster.objects.create(
+        role=role,
+        email=email,
+        password=password,
+        otp=otp
+    )
+
+    if role == "Candidate":
+
+        Candidate.objects.create(
+            user_id=newuser,
+            firstname=fname,
+            lastname=lname
+        )
+
+    elif role == "Company":
+
+        Company.objects.create(
+            user_id=newuser,
+            company_name=fname   # temporary
+        )
+
     else:
-        print('Company Registration') # yaha mujhe company ka views banana hai 
+        return render(request,'app/signup.html',{
+            'msg':'Invalid Role'
+        })
 
+    return render(request,'app/otpverify.html',{
+        'email':email
+    })
 
 def OTPPage(request):
     return render(request,'app/otpverify.html')
@@ -67,25 +98,46 @@ def LoginPage(request):
 
 def LoginUser(request):
     if request.method == "POST":
+
         role = request.POST.get('role')
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = UserMaster.objects.filter(email=email).first()
+        user = UserMaster.objects.filter(
+            email=email,
+            password=password,
+            role=role
+        ).first()
 
         if user:
-            if user.password == password and user.role == role:
+
+            request.session['id'] = user.id
+            request.session['role'] = user.role
+            request.session['email'] = user.email
+
+            # Candidate Login
+            if role == "Candidate":
                 can = Candidate.objects.get(user_id=user)
-                request.session['id'] = user.id
-                request.session['role'] = user.role
+
                 request.session['firstname'] = can.firstname
                 request.session['lastname'] = can.lastname
-                request.session['email'] = user.email
+
                 return redirect('index')
-            else:
-                return render(request, 'app/login.html', {'msg': 'Invalid credentials'})
+
+            # Company Login
+            elif role == "Company":
+                com = Company.objects.get(user_id=user)
+
+                request.session['company_name'] = com.company_name
+
+                return redirect('company_index')
+
         else:
-            return render(request, 'app/login.html', {'msg': 'User does not exist'})
+            return render(
+                request,
+                'app/login.html',
+                {'msg': 'Invalid Credentials'}
+            )
 
     return render(request, 'app/login.html')
 # profile views
@@ -94,6 +146,16 @@ def ProfilePage(request,pk):
     user=UserMaster.objects.get(pk=pk)
     can=Candidate.objects.get(user_id=user)
     return render(request,'app/profile.html',{'user':user,'can':can})
+
+def CompanyProfilePage(request, pk):
+    user = UserMaster.objects.get(pk=pk)
+    company = Company.objects.get(user_id=user)
+
+    return render(
+        request,
+        'app/company-profile.html',
+        {'user': user, 'company': company}
+    )
 
 
 def UpdateProfile(request, pk):
@@ -124,6 +186,31 @@ def UpdateProfile(request, pk):
             return redirect(f'/profile/{pk}')
 
     return redirect(f'/profile/{pk}')
+
+def UpdateCompanyProfile(request, pk):
+
+    user = UserMaster.objects.get(pk=pk)
+    company = Company.objects.get(user_id=user)
+
+    if request.method == "POST":
+
+        company.company_name = request.POST['company_name']
+        company.company_address = request.POST['company_address']
+        company.company_city = request.POST['company_city']
+        company.company_country = request.POST['company_country']
+
+        company.company_contact = request.POST['company_contact']
+        company.company_website = request.POST['company_website']
+        company.company_description = request.POST['company_description']
+
+        if request.FILES.get('company_logo'):
+            company.company_logo = request.FILES['company_logo']
+
+        company.save()
+
+        return redirect(f'/company-profile/{pk}/')
+
+    return redirect(f'/company-profile/{pk}/')
 
 
 def logout_user(request):

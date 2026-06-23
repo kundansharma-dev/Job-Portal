@@ -37,14 +37,21 @@ class Candidate(models.Model):
 # Company Table modle
 
 class Company(models.Model):
-    user_id=models.ForeignKey(UserMaster,on_delete=models.CASCADE)
-    firstname=models.CharField(max_length=50)
-    lastname=models.CharField(max_length=50)
-    company_name=models.CharField(max_length=150)
-    state=models.CharField(max_length=50)
-    city=models.CharField(max_length=50)
-    contact=models.CharField(max_length=50)
-    address=models.CharField(max_length=150)
-    logo_pic=models.ImageField(upload_to="app/img/company")
+    user_id = models.OneToOneField(UserMaster, on_delete=models.CASCADE)
+
+    company_name = models.CharField(max_length=100)
+    company_address = models.CharField(max_length=200, blank=True)
+    company_city = models.CharField(max_length=100, blank=True)
+    company_country = models.CharField(max_length=100, blank=True)
+
+    company_contact = models.CharField(max_length=20, blank=True)
+    company_email = models.EmailField(blank=True)
+    company_website = models.URLField(blank=True)
+
+    company_description = models.TextField(blank=True)
+    company_logo = models.ImageField(upload_to='company_logo/', blank=True)
+
+    def __str__(self):
+        return self.company_name
 
 

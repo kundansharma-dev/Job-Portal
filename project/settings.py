@@ -39,7 +39,7 @@ ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangoTemplate',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -55,18 +55,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 # =========================
-# DATABASE (RAILWAY SAFE)
+# DATABASE FIX (IMPORTANT PATCH)
 # =========================
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # THIS prevents dummy DB crash
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # =========================
-# SECURITY (PRODUCTION SAFE)
+# SECURITY
 # =========================
 CSRF_TRUSTED_ORIGINS = [
     "https://web-production-3f6fe.up.railway.app",

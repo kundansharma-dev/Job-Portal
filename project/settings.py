@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,6 +9,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "web-production-3f6fe.up.railway.app",
+    ".railway.app",
 ]
 
 INSTALLED_APPS = [
@@ -51,8 +53,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-import os
-
+# =========================
+# DATABASE (RAILWAY POSTGRES SAFE)
+# =========================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -80,9 +83,8 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # =========================
-# 🔥 RAILWAY CSRF FIX
+# CSRF + RAILWAY FIX
 # =========================
-
 CSRF_TRUSTED_ORIGINS = [
     "https://web-production-3f6fe.up.railway.app",
 ]
@@ -90,6 +92,5 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 
-# ⚠️ IMPORTANT: Railway pe stable ke liye False rakho (CSRF issue avoid)
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False

@@ -8,6 +8,7 @@ def LoginUser(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
+        # 🔥 user check
         user = UserMaster.objects.filter(
             email=email,
             password=password,
@@ -20,7 +21,7 @@ def LoginUser(request):
             request.session['role'] = user.role
             request.session['email'] = user.email
 
-            # ---------------- SAFE CANDIDATE LOGIN ----------------
+            # Candidate
             if role == "Candidate":
                 can = Candidate.objects.filter(user_id=user).first()
 
@@ -30,7 +31,7 @@ def LoginUser(request):
 
                 return redirect('index')
 
-            # ---------------- SAFE COMPANY LOGIN ----------------
+            # Company
             elif role == "Company":
                 com = Company.objects.filter(user_id=user).first()
 

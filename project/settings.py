@@ -55,17 +55,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 # =========================
-# DATABASE (RAILWAY SAFE BEST FIX)
+# DATABASE (RAILWAY SAFE)
 # =========================
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get("DATABASE_URL"),
-        conn_max_age=600
+        conn_max_age=600,
+        ssl_require=True
     )
 }
 
 # =========================
-# SECURITY FIX (RAILWAY)
+# SECURITY (PRODUCTION SAFE)
 # =========================
 CSRF_TRUSTED_ORIGINS = [
     "https://web-production-3f6fe.up.railway.app",
